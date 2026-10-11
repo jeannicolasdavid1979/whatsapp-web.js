@@ -2,8 +2,9 @@ FROM node:20-slim
 ENV PUPPETEER_SKIP_DOWNLOAD=true PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 RUN apt-get update && apt-get install -y --no-install-recommends chromium ca-certificates && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-COPY package.json .
-RUN npm install --no-audit --no-fund
+COPY package.hermes.json /app/wwebjs-lib/package.json
+RUN cd /app/wwebjs-lib && npm install --no-audit --no-fund
 COPY bot.js .
+RUN npm install --prefix /app --no-audit --no-fund qrcode-terminal &&     ln -s /app/wwebjs-lib /app/node_modules/whatsapp-web.js
 VOLUME /data
 CMD ["node", "bot.js"]
